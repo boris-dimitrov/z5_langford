@@ -252,22 +252,22 @@ int64_t dfs(vector<CompressedPositions<n>>& results, const int thread_id, mutex&
                         append_sequence<n>(results, pos, mtx);
                     }
                 } else {
-                    if (kMaxThreads > 1 &&
-                        m == 3 &&
-                        thread_id != ((131071 * possible_places + 255 * p1 + 511 * __builtin_ffsll(pos[m-2]) + 8191 * __builtin_ffsll(pos[m-3])) % kMaxThreads)) {
-                        continue;
+                    // A simple way to divide the work equally across kMaxThreads.
+                    // The Mersenne primes help even the load.
+                    // Carelessness here can lead to overflow issues.
+                    if (kMaxThreads == 1 ||
+                        m != 3 ||
+                        thread_id == ((131071 * possible_places + 255 * p1 + 511 * __builtin_ffsll(pos[m-1]) + 8191 * __builtin_ffsll(pos[m-2])) % kMaxThreads))
+                    {
+                        // Push all possible places for m + 1
+                        multipush(m + 1);
                     }
-                    // Push all possible places for m + 1
-                    multipush(m + 1);
                 }
             }
         }
     }
     return cnt;
 }
-
-// (p1 + __builtin_ffsll(pos[m-2]) + __builtin_ffsll(pos[m-3]) + __builtin_ffsll(pos[m-4])
-// ((131071 * (possible_places + 255 * p1 + 511 * __builtin_ffsll(pos[m-2]) + 8191 * __builtin_ffsll(pos[m-3]))) % kMaxThreads))
 
 template <int n>
 void print(const CompressedPositions<n>& pos);
