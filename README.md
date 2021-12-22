@@ -6,5 +6,3 @@ Copyright 2017 Boris Dimitrov, Portola Valley, CA 94028.
 Explanation and code:
 
     langford.cpp
-    
-Questions? Contact http://www.facebook.com/boris
